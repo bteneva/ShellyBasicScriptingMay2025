@@ -1,0 +1,101 @@
+// import fetch from 'node-fetch';
+
+// function setAnyColor(colorAsRGB){
+//     let config = {
+//         "config": {
+//             "leds": {
+//                 "colors":{
+//                     "switch:0": {
+//                         "on": {
+//                             "rgb": colorAsRGB,
+//                             "brightness": 100
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+//     }
+//     Shelly.call("PLUGS_UI.SetConfig", config);
+// }
+
+// function setGreenColor(){
+//     setAnyColor([0, 100, 0]);
+//   }
+  
+//   function setRedColor(){
+//     setAnyColor([100 ,0 , 0]);
+//   }
+  
+//   function setBlueColor(){
+//     setAnyColor([0, 0, 100]);
+//   }
+
+//   function changeLedColorByTemp(response){
+//     let parsedResponse = JSON.parse(response.body);
+//     let temoOutSide = parsedResponse.current.temperature_2m;
+
+//     if (temoOutSide <= 5){
+//         setBlueColor();
+//         console.log("The weather is cold outside!");
+//     }
+//     else if (temoOutSide < 25){
+//         setGreenColor();
+//         console.log("The weather is nice outside!");
+//     }
+//     else{
+//         setRedColor();
+//         console.log("The weather is hot outside")
+//     }
+
+//     console.log("It is", Math.round(temoOutSide), "degree celsius!");
+//   }
+//   let url = "https://api.open-meteo.com/v1/forecast?latitude=42.6975&longitude=23.3241&current=temperature_2m&tzid=Europe/Sofia";
+//   Shelly.call("HTTP.GET", {url: url}, changeLedColorByTemp);
+
+
+import fetch from 'node-fetch';
+
+function setAnyColor(colorAsRGB){
+    // Тук симулираме промяната на цвета на LED
+    console.log("Setting LED color to RGB:", colorAsRGB);
+}
+
+function setGreenColor(){
+    setAnyColor([0, 100, 0]);
+}
+  
+function setRedColor(){
+    setAnyColor([100 ,0 , 0]);
+}
+  
+function setBlueColor(){
+    setAnyColor([0, 0, 100]);
+}
+
+function changeLedColorByTemp(parsedResponse){
+    let tempOutside = parsedResponse.current.temperature_2m;
+
+    if (tempOutside <= 5){
+        setBlueColor();
+        console.log("The weather is cold outside!");
+    }
+    else if (tempOutside < 25){
+        setGreenColor();
+        console.log("The weather is nice outside!");
+    }
+    else {
+        setRedColor();
+        console.log("The weather is hot outside!");
+    }
+
+    console.log("It is", Math.round(tempOutside), "degree celsius!");
+}
+
+const url = "https://api.open-meteo.com/v1/forecast?latitude=42.6975&longitude=23.3241&current=temperature_2m&tzid=Europe/Sofia";
+
+fetch(url)
+    .then(res => res.json())
+    .then(data => changeLedColorByTemp(data))
+    .catch(err => console.error("Error fetching temperature:", err));
+
+ 
